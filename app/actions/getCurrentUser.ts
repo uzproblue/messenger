@@ -12,7 +12,15 @@ const getCurrentUser = async () => {
         email: session.user.email as string,
       },
     });
+
+    if (!currentUser) {
+      return null;
+    }
+
+    return currentUser;
   } catch (error: any) {
     return null;
   }
 };
+
+export default getCurrentUser;
