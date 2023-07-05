@@ -1,11 +1,11 @@
 import Avatar from "@/app/components/Avatar";
-import Modal from "@/app/components/Modal";
 import useOtherUser from "@/app/hooks/useOtherUser";
 import { Transition, Dialog } from "@headlessui/react";
 import { Conversation, User } from "@prisma/client";
 import { format } from "date-fns";
-import React, { Fragment, useMemo } from "react";
+import React, { Fragment, useMemo, useState } from "react";
 import { IoClose, IoTrash } from "react-icons/io5";
+import ConfirmModal from "./ConfirmModal";
 interface ProfileDraverProps {
   data: Conversation & {
     users: User[];
@@ -19,6 +19,7 @@ const ProfileDrawer: React.FC<ProfileDraverProps> = ({
   data,
   onClose,
 }) => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const otherUser = useOtherUser(data);
   const joinedDate = useMemo(() => {
     return format(new Date(otherUser.createdAt), "PP");
@@ -36,7 +37,11 @@ const ProfileDrawer: React.FC<ProfileDraverProps> = ({
 
   return (
     <>
-      <Modal isOpen onClose={() => {}} />
+      <ConfirmModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+      />
+
       <Transition.Root show={isOpen} as={Fragment}>
         <Dialog as="div" className=" relative z-50" onClose={onClose}>
           <Transition.Child
@@ -92,7 +97,10 @@ const ProfileDrawer: React.FC<ProfileDraverProps> = ({
                               onClick={() => {}}
                               className="flex flex-col gap-3 items-center cursor-pointer hover:opacity-75"
                             >
-                              <div className="w-10 h-10 bg-neutral-100 rounded-full flex items-center justify-center">
+                              <div
+                                onClick={() => setIsModalOpen(true)}
+                                className="w-10 h-10 bg-neutral-100 rounded-full flex items-center justify-center"
+                              >
                                 <IoTrash size={20} />
                               </div>
                               <div className="text-sm font-light text-neutral-600">
