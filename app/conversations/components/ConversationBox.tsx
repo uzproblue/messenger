@@ -25,16 +25,17 @@ const ConversationBox: React.FC<ConversationBoxProps> = ({
 
   const handleClick = useCallback(() => {
     router.push(`/conversations/${data.id}`);
-  }, [data.id, router]);
+  }, [data, router]);
 
   const lastMessage = useMemo(() => {
     const messages = data.messages || [];
     return messages[messages.length - 1];
   }, [data.messages]);
 
-  const userEmail = useMemo(() => {
-    return session.data?.user?.email;
-  }, [session.data?.user?.email]);
+  const userEmail = useMemo(
+    () => session.data?.user?.email,
+    [session.data?.user?.email]
+  );
 
   const hasSeen = useMemo(() => {
     if (!lastMessage) {
@@ -47,13 +48,13 @@ const ConversationBox: React.FC<ConversationBoxProps> = ({
     }
 
     return seenArr.filter((user) => user.email === userEmail).length !== 0;
-  }, [lastMessage, userEmail]);
+  }, [userEmail, lastMessage]);
 
   const lastMessageText = useMemo(() => {
     if (lastMessage?.image) {
       return "Sent an Image";
     }
-    if (lastMessage?.body) {
+    if (lastMessage?.body!) {
       return lastMessage.body;
     }
 
